@@ -8,7 +8,7 @@
 
         <div class="row mb-5">
             @foreach ($equipos as $equipo)
-                <div class="card p-3 m-3 " style="width: 20rem;">
+                <div class="card p-3 m-3 " style="width: 23rem;">
                     <img class="card-img-top img-responsive" height="300PX" src="{{ asset($equipo->imagen) }}" />
                     <a href="/equipos/{{ $equipo->id }}" class="btn btn-dark mt-2"> DETALLE </a>
 
@@ -35,7 +35,7 @@
                     </div>
                 </div>
             @endforeach
-
+            {{ $equipos->links() }}
         </div>
     </div>
 @endsection

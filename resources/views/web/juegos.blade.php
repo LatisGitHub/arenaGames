@@ -3,6 +3,31 @@
 
 @section('main')
     <div class="container">
+        <div class="form-container mt-3" style="margin-left: 25%">
+            <form method="POST" action='/juego/buscarPlataforma' enctype="multipart/form-data">
+                @csrf
+                <label for="plataforma" style="font-weight: bold">PLATAFORMA</label>
+                <select name="plataforma" class="block mt-1 w-full">
+                    <option value="pc">PC</option>
+                    <option value="xbox">XBOX</option>
+                    <option value="ps4">PS4</option>
+                    <option value="ps5">PS5</option>
+                </select>
+                <button class="btn btn-dark" type="submit">BUSCAR</button>
+            </form>
+            <form method="POST" action='/juego/buscarJuego' enctype="multipart/form-data">
+                @csrf
+                <label for="plataforma" style="font-weight: bold">JUEGO</label>
+                <input type="text" name="juego">
+                <button class="btn btn-dark" type="submit">BUSCAR</button>
+            </form>
+        </div>
+        <style>
+            .form-container {
+                display: flex;
+                gap: 20px;
+            }
+        </style>
         <h1 class="text-dark mt-5" style="text-align: center"> JUEGOS </h1>
         <div class="row mb-5">
             @foreach ($juegos as $juego)
@@ -22,13 +47,14 @@
                                         <li> <b> {{ $torneo->nombre }}</b></li>
                                     @endif
                                 @endforeach
-                            <ul>
+                                <ul>
                         @endif
-                      
+
                     </div>
                 </div>
             @endforeach
-
+            {{ $juegos->links() }}
         </div>
+       
     </div>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\Equipo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -21,16 +22,44 @@ class equiposController extends Controller
     {
         if (isset(Auth::user()->rol)) {
             if (Auth::user()->rol == 'admin') {
-                return view('admin.equipos', ['equipos' => Equipo::paginate(10)]);
+                return view('admin.equipos', ['equipos' => Equipo::paginate(4)]);
             } else {
-                return view('web.equipos', ['equipos' => Equipo::paginate(10)]);
+                return view('web.equipos', ['equipos' => Equipo::paginate(6)]);
             }
         }
         if (isEmpty(Auth::user())) {
-            return view('web.equipos', ['equipos' => Equipo::paginate(10)]);
+            return view('web.equipos', ['equipos' => Equipo::paginate(6)]);
         }
     }
-    
+    public function buscarEstado(Request $request)
+    {
+        $equipos = DB::table('equipos')
+            ->where('estado', '=', $request->input('estado'))->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.equipos', ['equipos' => $equipos]);
+        } else {
+            return view('web.equipos', ['equipos' => $equipos]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.equipos', ['equipos' => $equipos]);
+        }
+    }
+
+    public function buscarModalidad(Request $request)
+    {
+        $equipos = DB::table('equipos')
+            ->where('modalidad', '=', $request->input('modalidad'))->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.equipos', ['equipos' => $equipos]);
+        } else {
+            return view('web.equipos', ['equipos' => $equipos]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.equipos', ['equipos' => $equipos]);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

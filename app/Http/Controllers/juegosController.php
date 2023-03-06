@@ -6,6 +6,7 @@ use App\Models\Juego;
 use App\Models\Torneo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -20,18 +21,47 @@ class juegosController extends Controller
     {
         if (isset(Auth::user()->rol)) {
             if (Auth::user()->rol == 'admin') {
-                return view('admin.juegos', ['juegos' => Juego::all()], ['torneos' => Torneo::all()]);
+                return view('admin.juegos', ['juegos' => Juego::paginate(4)], ['torneos' => Torneo::all()]);
             } else {
-                return view('web.juegos', ['juegos' => Juego::all()], ['torneos' => Torneo::all()]);
+                return view('web.juegos', ['juegos' => Juego::paginate(6)], ['torneos' => Torneo::all()]);
             }
         }
         if (isEmpty(Auth::user())) {
-            return view('web.juegos', ['juegos' => Juego::all()], ['torneos' => Torneo::all()]);
+            return view('web.juegos', ['juegos' => Juego::paginate(6)], ['torneos' => Torneo::all()]);
         }
     }
 
+    public function buscarJuego(Request $request)
+    {
+        $juegos = DB::table('juegos')
+            ->where('nombre', 'like', '%'. $request->input('juego') . '%')->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        } else {
+            return view('web.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        }
+    }
+
+    public function buscarPlataforma(Request $request)
+    {
+        $juegos = DB::table('juegos')
+            ->where('plataforma', '=', $request->input('plataforma'))->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        } else {
+            return view('web.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.juegos', ['juegos' => $juegos], ['torneos' => Torneo::all()]);
+        }
+    }
     public function inicio() {
-        return view('web.inicio', ['juegos' => Juego::paginate(4)], ['torneos' => Torneo::all()]);
+        return view('web.inicio', ['juegos' => Juego::paginate(6)], ['torneos' => Torneo::all()]);
     }
     /**
      * Show the form for creating a new resource.

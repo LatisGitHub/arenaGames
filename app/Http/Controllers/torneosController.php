@@ -9,6 +9,7 @@ use App\Models\Juego;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -21,17 +22,45 @@ class torneosController extends Controller
      */
     public function index()
     {
-        if(isset(Auth::user()->rol)){
+        if (isset(Auth::user()->rol)) {
             if (Auth::user()->rol == 'admin') {
-                return view('admin.torneos', ['torneos' => Torneo::all(), 'juegos'=> Juego::all()]);
-            }else{
-                return view('web.torneos', ['torneos' => Torneo::all(), 'juegos'=> Juego::all()]);
-            } 
+                return view('admin.torneos', ['torneos' => Torneo::paginate(4), 'juegos' => Juego::all()]);
+            } else {
+                return view('web.torneos', ['torneos' => Torneo::paginate(6), 'juegos' => Juego::all()]);
+            }
         }
         if (isEmpty(Auth::user())) {
-            return view('web.torneos', ['torneos' => Torneo::all(), 'juegos'=> Juego::all()]);
-        } 
-       
+            return view('web.torneos', ['torneos' => Torneo::paginate(6), 'juegos' => Juego::all()]);
+        }
+    }
+    public function buscarFecha(Request $request)
+    {
+        $torneos = DB::table('torneos')
+            ->where('fecha', '>=', $request->input('buscarFecha'))->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        } else {
+            return view('web.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        }
+    }
+
+    public function buscarModalidad(Request $request)
+    {
+        $torneos = DB::table('torneos')
+            ->where('modalidad', '=', $request->input('modalidad'))->paginate(6);
+
+        if (Auth::user()->rol == "admin") {
+            return view('admin.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        } else {
+            return view('web.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        }
+        if (isEmpty(Auth::user())) {
+            return view('web.torneos', ['torneos' => $torneos, 'juegos' => Juego::all()]);
+        }
     }
 
     /**
@@ -69,14 +98,13 @@ class torneosController extends Controller
     {
         //Sacar todos los grupo del usuario logueado
         $equipos = Auth::user()->equipos()->get();
-        if(isset(Auth::user()->rol)){
+        if (isset(Auth::user()->rol)) {
             if (Auth::user()->rol == 'admin') {
                 return view('admin.formRegistrarEquipo', ['equipos' => $equipos, 'torneo' => $torneo]);
-            }else{
+            } else {
                 return view('web.formRegistrarEquipo', ['equipos' => $equipos, 'torneo' => $torneo]);
-            } 
+            }
         }
-
     }
 
     public function registrar(Torneo $torneo, Request $request)
@@ -86,7 +114,7 @@ class torneosController extends Controller
         $torneo->equipos()->attach($equipo_id);
 
         $equipos = Auth::user()->equipos()->get();
-        return redirect('torneos/'.$torneo->id);
+        return redirect('torneos/' . $torneo->id);
     }
 
     public function desinscribir(Torneo $torneo, Equipo $equipo)
@@ -94,7 +122,7 @@ class torneosController extends Controller
         if ($torneo->equipos()->where('equipo_id', $equipo->id)->get()->count() == 1)
             $torneo->equipos()->detach($equipo->id);
 
-            return redirect('torneos/'.$torneo->id);
+        return redirect('torneos/' . $torneo->id);
     }
 
 
@@ -107,12 +135,12 @@ class torneosController extends Controller
      */
     public function show(Torneo $torneo)
     {
-        if(isset(Auth::user()->rol)){
+        if (isset(Auth::user()->rol)) {
             if (Auth::user()->rol == 'admin') {
-                return view('admin.torneoDetalle' , ['torneo' => $torneo, 'equipos' => $torneo->equipos()->orderBy('nombre', 'asc')->get(), 'juegos'=> Juego::all()]);
-            }else{
-                return view('web.torneoDetalle' , ['torneo' => $torneo, 'equipos' => $torneo->equipos()->orderBy('nombre', 'asc')->get(), 'juegos'=> Juego::all()]);
-            } 
+                return view('admin.torneoDetalle', ['torneo' => $torneo, 'equipos' => $torneo->equipos()->orderBy('nombre', 'asc')->get(), 'juegos' => Juego::all()]);
+            } else {
+                return view('web.torneoDetalle', ['torneo' => $torneo, 'equipos' => $torneo->equipos()->orderBy('nombre', 'asc')->get(), 'juegos' => Juego::all()]);
+            }
         }
     }
 

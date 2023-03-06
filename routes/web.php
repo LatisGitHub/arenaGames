@@ -48,6 +48,12 @@ Route::middleware('auth')->group(function () {
     Route::get('torneos/{torneo}/inscribir', [torneosController::class, 'inscribir']);
     Route::get('/torneos/{torneo}/equipos/{equipo}/borrar', [torneosController::class, 'desinscribir']);
     Route::get('/juegos/{juego}', [juegosController::class, 'show'])->name('juegos.show');
+    Route::post('/torneo/buscar', [torneosController::class, 'buscarFecha'])->name('buscarFecha');
+    Route::post('/torneo/buscarModalidad', [torneosController::class, 'buscarModalidad'])->name('buscarModalidad');
+    Route::post('/equipo/buscarEstado', [equiposController::class, 'buscarEstado'])->name('buscarEstado');
+    Route::post('/equipo/buscarModalidad', [equiposController::class, 'buscarModalidad'])->name('buscarModalidad');
+    Route::post('/juego/buscarPlataforma', [juegosController::class, 'buscarPlataforma'])->name('buscarPlataforma');
+    Route::post('/juego/buscarJuego', [juegosController::class, 'buscarJuego'])->name('buscarJuego');
 });
 
 Route::get('/inicio', [juegosController::class, 'inicio']);
