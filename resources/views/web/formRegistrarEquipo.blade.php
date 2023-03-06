@@ -13,11 +13,19 @@
                             <label for="grupo" class="form-label" style="text-align: center"><b>EQUIPOS
                                     DISPONIBLES</b></label>
                             <select class="form-select" name="equipo">
+                                @php
+                                $equiposTorneoIds = $torneo
+                                    ->equipos()
+                                    ->pluck('id')
+                                    ->toArray();
+                            @endphp
+                            <select class="form-select" name="equipo">
                                 @foreach ($equipos as $equipo)
-                                    @if ($equipo->modalidad == $torneo->modalidad)
+                                    @if ($equipo->modalidad == $torneo->modalidad && !in_array($equipo->id, $equiposTorneoIds))
                                         <option value="{{ $equipo->id }}">{{ strtoupper($equipo->nombre) }}</option>
                                     @endif
                                 @endforeach
+                            </select>
                             </select>
 
                         </div>

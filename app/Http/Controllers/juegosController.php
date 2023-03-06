@@ -61,7 +61,7 @@ class juegosController extends Controller
         }
     }
     public function inicio() {
-        return view('web.inicio', ['juegos' => Juego::paginate(6)], ['torneos' => Torneo::all()]);
+        return view('web.inicio', ['juegos' => Juego::paginate(4)], ['torneos' => Torneo::all()]);
     }
     /**
      * Show the form for creating a new resource.
