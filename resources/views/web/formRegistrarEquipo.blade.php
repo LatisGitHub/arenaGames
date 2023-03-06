@@ -12,8 +12,7 @@
                         <div class="mb-3 p-2">
                             <label for="grupo" class="form-label" style="text-align: center"><b>EQUIPOS
                                     DISPONIBLES</b></label>
-                            <select class="form-select" name="equipo">
-                                @php
+                            @php
                                 $equiposTorneoIds = $torneo
                                     ->equipos()
                                     ->pluck('id')
@@ -26,8 +25,6 @@
                                     @endif
                                 @endforeach
                             </select>
-                            </select>
-
                         </div>
                     </div>
                 </div>
